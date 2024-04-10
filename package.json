@@ -1,5 +1,5 @@
 {
-  "name": "@nimpl/classnames-minifier",
+  "name": "@rs/classnames-minifier",
   "version": "3.0.0",
   "description": "Library for configuring style modules to generate compressed classes",
   "main": "dist/withClassnamesMinifier.js",
@@ -25,12 +25,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/vordgi/nimpl-classnames-minifier.git"
+    "url": "git://github.com/vitaliemiron/nimpl-classnames-minifier.git"
   },
   "author": {
-    "name": "Savelyev Alexander",
-    "email": "vordgi1@gmail.com",
-    "url": "https://github.com/vordgi/"
+    "name": "Vitalie Miron",
+    "email": "mironvitaliev@gmail.com",
+    "url": "https://github.com/vitaliemiron/"
   },
   "license": "MIT",
   "devDependencies": {
@@ -44,7 +44,7 @@
     "css-loader": ">=4.0.0"
   },
   "dependencies": {
-    "classnames-minifier": "0.1.1",
+    "rs-classnames-minifier": "0.1.2",
     "uuid": "9.0.1"
   }
 }
