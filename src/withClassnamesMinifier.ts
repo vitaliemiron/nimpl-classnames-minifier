@@ -1,42 +1,44 @@
 import type { Configuration } from 'webpack/types';
-import type { Config } from 'classnames-minifier/dist/lib/types/plugin';
-import ClassnamesMinifier from 'classnames-minifier';
+import type { Config } from 'rs-classnames-minifier/dist/lib/types/plugin';
+import ClassnamesMinifier from 'rs-classnames-minifier';
 import injectConfig from './lib/injectConfig';
 import path from 'path';
 
-type PluginOptions = Omit<Config, 'cacheDir' | 'distDir'> & { disabled?: boolean };
+type PluginOptions = Omit<Config, 'cacheDir' | 'distDir'> & {
+  disabled?: boolean;
+};
 
 let classnamesMinifier: ClassnamesMinifier;
 
 const withClassnameMinifier = (pluginOptions: PluginOptions = {}) => {
-    return (nextConfig: any = {}) => {
-        if (pluginOptions.disabled) return nextConfig;
+  return (nextConfig: any = {}) => {
+    if (pluginOptions.disabled) return nextConfig;
 
-        if (!classnamesMinifier) {
-            const distDir = nextConfig?.distDir || '.next'
-            const distDirAbsolute = path.join(process.cwd(), distDir);
-            const cacheDir = path.join(distDirAbsolute, 'cache/ncm');
-            classnamesMinifier = new ClassnamesMinifier({
-                prefix: pluginOptions.prefix,
-                reservedNames: pluginOptions.reservedNames,
-                distDir: distDirAbsolute,
-                cacheDir,
-            });
+    if (!classnamesMinifier) {
+      const distDir = nextConfig?.distDir || '.next';
+      const distDirAbsolute = path.join(process.cwd(), distDir);
+      const cacheDir = path.join(distDirAbsolute, 'cache/ncm');
+      classnamesMinifier = new ClassnamesMinifier({
+        prefix: pluginOptions.prefix,
+        reservedNames: pluginOptions.reservedNames,
+        distDir: distDirAbsolute,
+        cacheDir,
+      });
+    }
+
+    return {
+      ...nextConfig,
+      webpack: (config: Configuration, options: any) => {
+        injectConfig({ classnamesMinifier }, config.module?.rules);
+
+        if (typeof nextConfig.webpack === 'function') {
+          return nextConfig.webpack(config, options);
         }
 
-        return ({
-            ...nextConfig,
-            webpack: (config: Configuration, options: any) => {
-                injectConfig({ classnamesMinifier }, config.module?.rules);
-
-                if (typeof nextConfig.webpack === 'function') {
-                    return nextConfig.webpack(config, options);
-                }
-
-                return config;
-            }
-        })
-    }
+        return config;
+      },
+    };
+  };
 };
 
 export default withClassnameMinifier;
